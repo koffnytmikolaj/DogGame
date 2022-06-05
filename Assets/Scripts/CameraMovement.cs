@@ -4,11 +4,22 @@ using UnityEngine;
 
 public class CameraMovement : MonoBehaviour
 {
-    public float cameraSpeed = 12;
+    private float cameraSpeed;
+    private Dog dog;
+    [SerializeField] GameObject player;
+
+    private void Awake()
+    {
+        dog = player.GetComponent<Dog>();
+    }
 
     // Update is called once per frame
     void Update()
     {
-        transform.position += new Vector3(cameraSpeed * Time.deltaTime, 0, 0);
+        if(!dog.dead)
+        {
+            cameraSpeed = Mathf.Min(12 * (1 + dog.transform.position.x / 1000), 36f);
+            transform.position += new Vector3(cameraSpeed * Time.deltaTime, 0, 0);
+        }
     }
 }

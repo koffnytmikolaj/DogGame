@@ -4,13 +4,11 @@ using UnityEngine;
 
 public class SpawnObstacles : MonoBehaviour
 {
-    public GameObject obstacle;
+    public GameObject[] obstacles;
     public float timeBetweenSpawn;
     private float spawnTime;
     public float minX;
     public float maxX;
-    public float minY;
-    public float maxY;
     private Dog dog;
     [SerializeField] GameObject player;
     [SerializeField] GameObject gameManager;
@@ -32,16 +30,22 @@ public class SpawnObstacles : MonoBehaviour
 
     void Spawn()
     {
+        Vector3 spawnPosition = GetSpawnPosition();
+        Instantiate(obstacles[Random.Range(0, obstacles.Length)], spawnPosition, Quaternion.identity);
+    }
+
+    private Vector3 GetSpawnPosition()
+    {
         Vector3 spawnPosition;
         float randomX, distance;
-        float gamePositionFactor = 0.6f * Mathf.Min(1 + gameManager.transform.position.x / 1000, 2f);
+        float gamePositionFactor = 2f/3f * Mathf.Min(1 + gameManager.transform.position.x / 1000, 2f);
         bool repeat;
         do
         {
             repeat = false;
             randomX = Random.Range(minX, maxX);
             spawnPosition = transform.position + new Vector3(randomX, -2.8f, 0);
-            
+
             foreach (GameObject obs in GameObject.FindGameObjectsWithTag("Obstacle"))
             {
                 distance = Mathf.Abs(obs.transform.position.x - spawnPosition.x);
@@ -52,6 +56,6 @@ public class SpawnObstacles : MonoBehaviour
                 }
             }
         } while (repeat);
-        Instantiate(obstacle, spawnPosition, transform.rotation);
+        return spawnPosition;
     }
 }
